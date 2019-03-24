@@ -11,24 +11,24 @@ import com.mariav.codeswag.Model.Category
 import com.mariav.codeswag.R
 import kotlinx.android.synthetic.main.category_list.view.*
 
-class CategoryAdapter(context: Context, categories: List<Category>) : BaseAdapter(){
-
-    val context = context
-    val categories = categories
+class CategoryAdapter(val context: Context,val categories: List<Category>) : BaseAdapter(){
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val categoryView: View
-        categoryView = LayoutInflater.from(context).inflate(R.layout.category_list,null)
-        val categoryImage : ImageView = categoryView.imgCategory
-        val categoryName : TextView = categoryView.txtHat
+        val holder : ViewHolder
+        if(convertView == null){
+            categoryView = LayoutInflater.from(context).inflate(R.layout.category_list,null)
+            holder = ViewHolder(categoryView.imgCategory,categoryView.txtHat)
+            categoryView.tag = holder
+        }else{
+            holder = convertView.tag as ViewHolder
+            categoryView = convertView
+        }
 
-        val category = categories[position]
-        categoryName.text = category.title
-
+        holder.categoryName?.text = categories[position].title
         /*In order to access resource ID need to find it*/
-        val resourceId = context.resources.getIdentifier(category.image,"drawable",context.packageName)
-        categoryImage.setImageResource(resourceId)
-        println(resourceId)
+        val resourceId = context.resources.getIdentifier(categories[position].image,"drawable",context.packageName)
+        holder.categoryImage?.setImageResource(resourceId)
         return categoryView;
     }
 
@@ -43,4 +43,6 @@ class CategoryAdapter(context: Context, categories: List<Category>) : BaseAdapte
     override fun getCount(): Int {
         return categories.count()
     }
+
+    private class ViewHolder(val categoryImage : ImageView,val categoryName : TextView)
 }

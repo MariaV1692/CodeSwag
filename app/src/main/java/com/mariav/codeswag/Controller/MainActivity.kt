@@ -1,5 +1,6 @@
 package com.mariav.codeswag.Controller
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -10,6 +11,7 @@ import com.mariav.codeswag.Adapters.CategoryRecyclerAdapter
 import com.mariav.codeswag.Model.Category
 import com.mariav.codeswag.R
 import com.mariav.codeswag.Services.DataService
+import com.mariav.codeswag.Utilities.EXTRA_CATEGORY
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -21,11 +23,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         adapter = CategoryRecyclerAdapter(this,
-            DataService.categories)
+            DataService.categories) {
+            item ->
+            val productIntent = Intent(this,ProductsActivity::class.java)
+            productIntent.putExtra(EXTRA_CATEGORY, item.title)
+            startActivity(productIntent)
+        }
 
         categoryListView.adapter = adapter
         categoryListView.layoutManager = LinearLayoutManager(this)
         categoryListView.setHasFixedSize(true)
+
+
+
         /*categoryListView.setOnItemClickListener { parent, view, position, id ->
             val toast = Toast.makeText(this,"You category is ${DataService.categories[position].title}",Toast.LENGTH_SHORT)
             toast.show()
